@@ -20,7 +20,6 @@ interface AppHeaderProps {
 
 export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
   const { colorScheme, toggleColorScheme } = useTheme();
-  //testing something
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
