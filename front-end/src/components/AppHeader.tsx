@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   HomeIcon,
   MagnifyingGlassIcon,
@@ -7,7 +8,6 @@ import {
 import { MusicalNoteIcon } from "@heroicons/react/24/solid";
 import { ActionIcon, Group, Text, TextInput } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useTheme } from "../context/ThemeContext";
 import { LoginButton } from "./LoginButton";
 
@@ -38,8 +38,15 @@ export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
             color: colorScheme === "dark" ? "#fff" : "#000",
           }}
         />
-        <Text fw={700} size="lg" style={{ letterSpacing: "-0.02em" }}>
-          Listen
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: 900,
+            letterSpacing: "-0.06em",
+          }}
+          c="#90329b"
+        >
+          FairPlay(FP)
         </Text>
       </Group>
 

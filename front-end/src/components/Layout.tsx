@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group } from "@mantine/core";
+import { AppShell, AppShellFooter, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AppHeader } from "./AppHeader";
 import { NavbarPlaylists } from "./NavBarPlaylists";
