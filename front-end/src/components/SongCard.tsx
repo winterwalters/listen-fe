@@ -1,21 +1,63 @@
 import { Card, Image, Text, Stack, ActionIcon, Box } from "@mantine/core";
-import { PlayIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
+import { Howl } from "howler";
+import { useEffect, useRef, useState } from "react";
+import { usePlayback } from "../context/PlaybackContext";
 
 interface SongCardProps {
   title: string;
   artist: string;
   coverUrl: string;
-  onPlay: () => void;
+  audioUrl: string;
+  onPlay?: () => void;
 }
 
 export const SongCard = ({
   title,
   artist,
   coverUrl,
+  audioUrl,
   onPlay,
 }: SongCardProps) => {
+  const { activateHowl, detachHowl } = usePlayback();
   const [hovered, setHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const howlRef = useRef<Howl | null>(null);
+
+  useEffect(() => {
+    const howl = new Howl({
+      src: [audioUrl],
+      html5: true,
+    });
+
+    const syncPlaying = () => setIsPlaying(howl.playing());
+    howl.on("play", syncPlaying);
+    howl.on("pause", syncPlaying);
+    howl.on("stop", syncPlaying);
+    howl.on("end", syncPlaying);
+
+    howlRef.current = howl;
+
+    return () => {
+      detachHowl(howl);
+      howl.unload();
+      howlRef.current = null;
+    };
+  }, [audioUrl, detachHowl]);
+
+  const togglePlayback = () => {
+    const howl = howlRef.current;
+    if (!howl) return;
+
+    if (howl.playing()) {
+      howl.pause();
+      return;
+    }
+
+    activateHowl(howl, { title, artist, audioUrl });
+    howl.play();
+    onPlay?.();
+  };
 
   return (
     <Card
@@ -51,22 +93,27 @@ export const SongCard = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            opacity: hovered ? 1 : 0,
+            opacity: hovered || isPlaying ? 1 : 0,
             transition: "opacity 150ms ease",
           }}
         >
           <ActionIcon
             onClick={(e) => {
               e.stopPropagation();
-              onPlay();
+              togglePlayback();
             }}
             size="xl"
             radius="xl"
             color="white"
             variant="filled"
             style={{ background: "rgba(255,255,255,0.92)" }}
+            aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <PlayIcon style={{ width: 20, height: 20, color: "#111" }} />
+            {isPlaying ? (
+              <PauseIcon style={{ width: 20, height: 20, color: "#111" }} />
+            ) : (
+              <PlayIcon style={{ width: 20, height: 20, color: "#111" }} />
+            )}
           </ActionIcon>
         </Box>
       </Card.Section>

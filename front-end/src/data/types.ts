@@ -5,6 +5,8 @@ export type Song = {
   album: string;
   duration: number; // duration in seconds
   coverUrl: string; // URL to the song's cover image
+  /** Audio file URL (e.g. `/Songs/track.mp3` from Vite `public/Songs/`) */
+  audioUrl: string;
 };
 
 export type Playlist = {

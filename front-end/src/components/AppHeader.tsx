@@ -1,4 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import {
   HomeIcon,
   MagnifyingGlassIcon,
@@ -6,7 +5,7 @@ import {
   SunIcon,
 } from "@heroicons/react/24/outline";
 import { MusicalNoteIcon } from "@heroicons/react/24/solid";
-import { ActionIcon, Group, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Group, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import { useTheme } from "../context/ThemeContext";
 import { LoginButton } from "./LoginButton";
@@ -18,9 +17,9 @@ interface AppHeaderProps {
   avatarUrl?: string;
 }
 
-export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
+export const AppHeader = ({ onSearch }: AppHeaderProps) => {
   const { colorScheme, toggleColorScheme } = useTheme();
-  const { user } = useAuth0();
+  const mantine = useMantineTheme();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -35,7 +34,10 @@ export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
           style={{
             width: 20,
             height: 20,
-            color: colorScheme === "dark" ? "#fff" : "#000",
+            color:
+              colorScheme === "dark"
+                ? mantine.colors.ashGrey[4]
+                : mantine.colors.vividRoyal[8],
           }}
         />
         <Text
@@ -44,7 +46,7 @@ export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
             fontWeight: 900,
             letterSpacing: "-0.06em",
           }}
-          c="#90329b"
+          c="vintageBerry.6"
         >
           FairPlay(FP)
         </Text>
@@ -57,7 +59,7 @@ export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
           variant="subtle"
           size="lg"
           aria-label="Home"
-          color="gray"
+          color="dustyMauve"
         >
           <HomeIcon style={{ width: 22, height: 22 }} />
         </ActionIcon>
@@ -81,7 +83,7 @@ export const AppHeader = ({ onSearch, avatarUrl }: AppHeaderProps) => {
           variant="subtle"
           size="lg"
           aria-label="Toggle theme"
-          color="gray"
+          color="dustyMauve"
         >
           {colorScheme === "dark" ? (
             <SunIcon style={{ width: 22, height: 22 }} />

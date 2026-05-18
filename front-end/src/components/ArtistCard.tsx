@@ -9,7 +9,6 @@ export const ArtistCard = ({ artist }: { artist: ExtendedArtist }) => {
       to={`/artistProfile/${artist.id}`}
       w={160}
       h={220}
-      radius="md"
       withBorder
       style={{
         cursor: "pointer",

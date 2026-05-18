@@ -18,9 +18,8 @@ import {
 import { ArtistCard } from "../components/ArtistCard";
 import { mockArtistData } from "../data/mockData";
 import type { Playlist } from "../data/types";
-import {mockPlaylists} from "../data/mockData";
+import { mockPlaylists } from "../data/mockData";
 import { useAuth0 } from "@auth0/auth0-react";
-
 
 // ---- Helpers ----
 const formatDuration = (seconds: number) => {
@@ -49,7 +48,7 @@ function PlaylistCard({ playlist }: { playlist: Playlist }) {
 export const UserProfilePage = () => {
   const [artists] = useState(mockArtistData);
   const [playlists] = useState(mockPlaylists);
-  const { user , isLoading} = useAuth0();
+  const { user, isLoading } = useAuth0();
 
   if (isLoading) {
     return <Loader />;
@@ -62,7 +61,11 @@ export const UserProfilePage = () => {
         {user?.picture ? (
           <Avatar src={user.picture} size={80} radius="xl" />
         ) : (
-          <Avatar src="https://cdn.displate.com/artwork/380x270/2024-11-18/d0f43a34-bbb4-4984-a768-2de1f9c283e4.jpg" size={80} radius="xl" />
+          <Avatar
+            src="https://cdn.displate.com/artwork/380x270/2024-11-18/d0f43a34-bbb4-4984-a768-2de1f9c283e4.jpg"
+            size={80}
+            radius="xl"
+          />
         )}
         <div>
           <Title order={2}>Winter Walters</Title>

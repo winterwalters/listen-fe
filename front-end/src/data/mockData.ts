@@ -1,105 +1,45 @@
 import { type Song, type SongSection } from "./types";
-import type { Playlist, CreatePlaylistRequest, ExtendedArtist } from "./types";
+import type { Playlist, ExtendedArtist } from "./types";
 
-export const mockPlaylists: Playlist[] = [
-  {
-    id: "1",
-    title: "Chill Vibes",
-    creatorName: "Alice",
-    dateCreated: "2024-11-01",
-    length: 1200,
-    visibility: "public",
-    description: "Relax and unwind with these chill tunes.",
-    songs: [
-      {
-        id: "1",
-        title: "Venice Bitch",
-        artist: "Lana Del Rey",
-        duration: 244,
-        coverUrl:
-          "https://m.media-amazon.com/images/M/MV5BODU5ZWQzYzgtNGM3NC00ZjRlLWE2NjMtNzdlMzdmZjJiNGJjXkEyXkFqcGc@._V1_QL75_UX190_CR0,55,190,190_.jpg",
-        album: "Normal Fucking Rockwell",
-      },
-      {
-        id: "2",
-        title: "Just Like Heaven",
-        artist: "The Cure",
-        duration: 214,
-        coverUrl:
-          "https://upload.wikimedia.org/wikipedia/en/f/f5/The_Cure_-_Kiss_Me%2C_Kiss_Me%2C_Kiss_Me.jpg",
-        album: "Kiss Me Kiss Me Kiss Me",
-      },
-      {
-        id: "4",
-        title: "Walk though water",
-        artist: "Overmono",
-        duration: 287,
-        coverUrl: "https://f4.bcbits.com/img/a3493924304_16.jpg",
-        album: "Overmono",
-      },
-    ],
-  },
-  {
-    id: "2",
-    title: "Workout Mix",
-    creatorName: "Bob",
-    dateCreated: "2024-10-28",
-    length: 1500,
-    visibility: "public",
-    description: "Get pumped with these high-energy tracks.",
-    songs: [
-      {
-        id: "3",
-        title: "Stronger",
-        artist: "Kanye West",
-        duration: 311,
-        coverUrl:
-          "https://upload.wikimedia.org/wikipedia/en/a/a3/Kanyewest_collegedropout.jpg",
-        album: "Graduation",
-      },
-      {
-        id: "5",
-        title: "Harvest Moon",
-        artist: "Neil Young",
-        duration: 240,
-        coverUrl:
-          "https://upload.wikimedia.org/wikipedia/en/b/b3/Harvest_-_neil_young.jpg",
-        album: "Harvest Moon",
-      },
-    ],
-  },
-  {
-    id: "3",
-    title: "Classic Rock",
-    creatorName: "Charlie",
-    dateCreated: "2024-09-15",
-    length: 1800,
-    visibility: "private",
-    description: "Timeless rock anthems from the 60s and 70s.",
-    songs: [
-      {
-        id: "2",
-        title: "Just Like Heaven",
-        artist: "The Cure",
-        duration: 214,
-        coverUrl:
-          "https://upload.wikimedia.org/wikipedia/en/f/f5/The_Cure_-_Kiss_Me%2C_Kiss_Me%2C_Kiss_Me.jpg",
-        album: "Kiss Me Kiss Me Kiss Me",
-      },
-      {
-        id: "5",
-        title: "Harvest Moon",
-        artist: "Neil Young",
-        duration: 240,
-        coverUrl:
-          "https://upload.wikimedia.org/wikipedia/en/b/b3/Harvest_-_neil_young.jpg",
-        album: "Harvest Moon",
-      },
-    ],
-  },
-];
+/** Filenames in `public/Songs/` (Vite serves them at `/Songs/...`). */
+const PUBLIC_SONG_FILES = [
+  "Nana.mp3",
+  "Whiplash.mp3",
+  "Flamingo Fresh.mp3",
+  "You and me.mp3",
+  "That Would Be The Sun.mp3",
+  "01 Spring Theory (Moomin Rework).mp3",
+  "02 Marijuana.mp3",
+  "03 Sticky Fingers (Lane 8 Remix).mp3",
+  "05 Sax my mind.mp3",
+  "06 Just Waiting 4 U, Tonight (Ann Marie).mp3",
+  "07 Conceiled project (part 1).mp3",
+  "09 Pressured.mp3",
+  "10 Conceiled project (part 2).mp3",
+  "01 20 Salmon Down (Original Mix).mp3",
+  "Stone Flower (Original Mix).mp3",
+] as const;
 
-export const mockSongs = [
+/** Stable URL under `/Songs/` for mock playback (numeric ids cycle; other ids are hashed). */
+export function audioUrlForSongId(id: string): string {
+  const n = Number.parseInt(id, 10);
+  let index: number;
+  if (id === String(n) && n >= 1) {
+    index = (n - 1) % PUBLIC_SONG_FILES.length;
+  } else {
+    let h = 0;
+    for (let i = 0; i < id.length; i++) {
+      h = (h * 31 + id.charCodeAt(i)) >>> 0;
+    }
+    index = h % PUBLIC_SONG_FILES.length;
+  }
+  const file = PUBLIC_SONG_FILES[index]!;
+  return `/Songs/${encodeURIComponent(file)}`;
+}
+
+type SongDraft = Omit<Song, "audioUrl">;
+
+const mockSongsDraft: SongDraft[] = [
   {
     id: "1",
     title: "Venice Bitch",
@@ -280,6 +220,44 @@ export const mockSongs = [
   },
 ];
 
+export const mockSongs: Song[] = mockSongsDraft.map((s) => ({
+  ...s,
+  audioUrl: audioUrlForSongId(s.id),
+}));
+
+export const mockPlaylists: Playlist[] = [
+  {
+    id: "1",
+    title: "Chill Vibes",
+    creatorName: "Alice",
+    dateCreated: "2024-11-01",
+    length: 1200,
+    visibility: "public",
+    description: "Relax and unwind with these chill tunes.",
+    songs: [mockSongs[0], mockSongs[1], mockSongs[3]],
+  },
+  {
+    id: "2",
+    title: "Workout Mix",
+    creatorName: "Bob",
+    dateCreated: "2024-10-28",
+    length: 1500,
+    visibility: "public",
+    description: "Get pumped with these high-energy tracks.",
+    songs: [mockSongs[2], mockSongs[4]],
+  },
+  {
+    id: "3",
+    title: "Classic Rock",
+    creatorName: "Charlie",
+    dateCreated: "2024-09-15",
+    length: 1800,
+    visibility: "private",
+    description: "Timeless rock anthems from the 60s and 70s.",
+    songs: [mockSongs[1], mockSongs[4]],
+  },
+];
+
 export const homeSections: SongSection[] = [
   {
     id: "recently-listened",
@@ -389,6 +367,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Vroom Vroom EP",
         duration: 193,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("s1"),
       },
       {
         id: "s2",
@@ -397,6 +376,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Charli",
         duration: 189,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("s2"),
       },
       {
         id: "s3",
@@ -405,6 +385,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Crash",
         duration: 172,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("s3"),
       },
     ],
     albums: [
@@ -444,6 +425,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Unknown Death 2002",
         duration: 174,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("y1"),
       },
       {
         id: "y2",
@@ -452,6 +434,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Stranger",
         duration: 210,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("y2"),
       },
       {
         id: "y3",
@@ -460,6 +443,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Stranger",
         duration: 198,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("y3"),
       },
     ],
     albums: [
@@ -501,6 +485,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Pang",
         duration: 187,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("cp1"),
       },
       {
         id: "cp2",
@@ -509,6 +494,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Single",
         duration: 196,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("cp2"),
       },
       {
         id: "cp3",
@@ -517,6 +503,7 @@ export const mockArtistData: ExtendedArtist[] = [
         album: "Pang",
         duration: 242,
         coverUrl: "https://via.placeholder.com/150",
+        audioUrl: audioUrlForSongId("cp3"),
       },
     ],
     albums: [

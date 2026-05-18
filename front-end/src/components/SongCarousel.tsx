@@ -85,6 +85,7 @@ export const SongCarousel = ({
                 title={song.title}
                 artist={song.artist}
                 coverUrl={song.coverUrl}
+                audioUrl={song.audioUrl}
                 onPlay={() => onPlay(song)}
               />
             </Box>

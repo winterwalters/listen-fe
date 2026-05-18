@@ -4,6 +4,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { router } from "./router";
 import "@mantine/core/styles.css";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

@@ -30,7 +30,7 @@ export function ArtistProfilePage() {
     <Container size="lg" py="xl">
       {/* Header */}
       <Group align="flex-start" gap="lg">
-        <Avatar src={artist.imageUrl} size={120} radius="md" />
+        <Avatar src={artist.imageUrl} size={120} radius="none" />
         <Stack gap={4}>
           <Title>{artist.name}</Title>
           <Text c="dimmed">{artist.genre}</Text>
